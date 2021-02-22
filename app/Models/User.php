@@ -14,7 +14,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
     use CrudTrait; // <----- this
     use HasRoles; // <------ and this
-
+    CONST IS_ADMIN = 1;
     /**
      * The attributes that are mass assignable.
      *
