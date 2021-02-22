@@ -9,8 +9,11 @@
       <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/backpack/crud" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/backpack/generators" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/backpack/pagemanager" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/backpack/permissionmanager" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/cocur/slugify" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/creativeorange/gravatar" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/cviebrock/eloquent-sluggable" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/cache" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/dbal" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/event-manager" />
