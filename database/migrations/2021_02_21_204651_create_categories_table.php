@@ -16,7 +16,7 @@ class CreateCategoriesTable extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedTinyInteger('language_id');
-            $table->foreign('language_id')->references('id')->on('languages')->onDelete('null');
+            $table->foreign('language_id')->references('id')->on('languages')->onDelete('cascade');
             $table->integer('parent_id')->unsigned()->nullable()->default(null);
             $table->foreign('parent_id')->references('id')->on('categories')->onUpdate('cascade')->onDelete('set null');
             $table->integer('order')->default(1);

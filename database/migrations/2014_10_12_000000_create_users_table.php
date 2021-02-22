@@ -27,7 +27,7 @@ class CreateUsersTable extends Migration
             $table->string('facebook')->nullable();
             $table->string('instagram')->nullable();
             $table->string('twitter')->nullable();
-            $table->string('is_admin')->nullable();
+            $table->string('is_admin')->default(\App\Models\User::IS_ADMIN);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
