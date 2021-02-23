@@ -23,8 +23,8 @@ return [
     'password'              => 'Password',
     'password_confirmation' => 'Password Confirmation',
     'user_role_permission'  => 'User Role Permissions',
-    'user'                  => 'User',
-    'users'                 => 'Users',
+    'user'                  => 'Admin',
+    'users'                 => 'Admins',
     'guard_type'            => 'Guard Type',
 
 ];
