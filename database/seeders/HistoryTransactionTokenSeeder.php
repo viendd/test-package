@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Author;
 use App\Models\HistoryTransactionToken;
+use Carbon\Carbon;
 use Faker\Factory;
 use Illuminate\Database\Seeder;
 
@@ -27,6 +28,8 @@ class HistoryTransactionTokenSeeder extends Seeder
                 'type' => HistoryTransactionToken::TYPE_SEND,
                 'note' => $faker->sentence(),
                 'token' => $faker->numberBetween(5, 20),
+                'created_at' => Carbon::now()->subDays($faker->numberBetween(5, 50)),
+                'updated_at' => Carbon::now()
             ]);
         }
     }
