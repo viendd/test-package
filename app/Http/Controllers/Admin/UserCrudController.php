@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\User;
 use App\Services\UploadService;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\PermissionManager\app\Http\Requests\UserStoreCrudRequest as StoreRequest;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserCrudController extends CrudController
 {
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation { search as traitSearch; }
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation { store as traitStore; }
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation { update as traitUpdate; }
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
@@ -239,6 +240,12 @@ class UserCrudController extends CrudController
                 ],
             ],
         ]);
+    }
+
+    public function search()
+    {
+        $this->crud->addClause('where', 'is_admin', '=', User::IS_ADMIN);
+        return $this->traitSearch();
     }
 }
 
