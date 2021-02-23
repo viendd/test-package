@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\ArticleRequest;
 use App\Models\Article;
+use App\Models\Category;
 use App\Models\User;
 use App\Services\UploadService;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
@@ -23,7 +24,6 @@ class ArticleCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation {store as protected parent_store;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation {update as protected parent_update;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
     protected $fileService;
 
@@ -48,7 +48,40 @@ class ArticleCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // columns
+
+
+        CRUD::addColumn(['name' => 'language_id', 'type' => 'closure', 'label' => __('category.language'), 'function' => function($entry){
+            return $entry->language->name;
+        }]);
+
+        CRUD::addColumn(['name' => 'parent_id', 'type' => 'closure', 'label' => __('category.category_parent'), 'function' => function($entry){
+            return $entry->category ? $entry->category->name : __('category.category_parent');
+        }]);
+
+        CRUD::addColumn(['name' => 'user_id', 'type' => 'closure', 'label' => __('article.user_created'), 'function' => function($entry){
+            return $entry->user ? $entry->user->name : null;
+        }]);
+
+        CRUD::column('title')->type('text');
+
+        CRUD::addColumn(['name' => 'image', 'type' => 'closure', 'label' => __('article.image'), 'function' => function($entry){
+            return '<img src="'.url($entry->image).'" alt="" width="120" height="120"/>';
+        }]);
+
+
+        $this->crud->addFilter(
+            [
+                'name'  => 'categories',
+                'type'  => 'select2',
+                'label' => __('category.category_name'),
+            ],
+            Category::all()->pluck('name', 'id')->toArray(),
+            function ($value) { // if the filter is active
+                $this->crud->addClause('whereHas', 'category', function ($query) use ($value) {
+                    $query->where('category_id', '=', $value);
+                });
+            }
+        );
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
@@ -174,7 +207,6 @@ class ArticleCrudController extends CrudController
             $extra['publish_date'] = Carbon::now();
         }
 
-        $extra['image'] = $this->handleImage($request, $action, $pathUrl);
         return $extra;
     }
 

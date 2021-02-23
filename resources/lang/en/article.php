@@ -6,5 +6,6 @@ return [
     'title' => 'Title',
     'intro_short' => 'Intro short',
     'content' => 'Content',
-    'image' => 'Image'
+    'image' => 'Image',
+    'user_created' => 'User created'
 ];

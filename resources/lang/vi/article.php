@@ -6,5 +6,6 @@ return [
     'title' => 'Tiêu đề',
     'intro_short' => 'Giới thiệu ngắn',
     'content' => 'Nội dụng',
-    'image' => 'Ảnh đại diện'
+    'image' => 'Ảnh đại diện',
+    'user_created' => 'Người tạo'
 ];
