@@ -5,7 +5,7 @@ namespace App\Models;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Language extends Model
 {
     use CrudTrait;
 
@@ -15,7 +15,7 @@ class Category extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'categories';
+    protected $table = 'languages';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -34,16 +34,6 @@ class Category extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-
-    public function language()
-    {
-        return $this->belongsTo(Language::class, 'language_id');
-    }
-
-    public function category()
-    {
-        return $this->belongsTo(self::class, 'parent_id');
-    }
 
     /*
     |--------------------------------------------------------------------------
