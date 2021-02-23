@@ -21,12 +21,16 @@ class CategoryRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
+     * @param Request $request
      * @return array
      */
     public function rules()
     {
+        $id = \request()->input('id') ?? '';
         return [
-            // 'name' => 'required|min:5|max:255'
+            'language_id' => 'required',
+            'order' => 'required|integer',
+            'name' => 'required|unique:categories,name,'.$id,
         ];
     }
 
@@ -50,7 +54,10 @@ class CategoryRequest extends FormRequest
     public function messages()
     {
         return [
-            //
+            'name.required' => __('validation.required', ['attribute' => __('category.category_name')]),
+            'order.required' => __('validation.required', ['attribute' => __('category.order')]),
+            'order.integer' => __('validation.integer', ['attribute' => __('category.order')]),
+            'name.unique' => __('validation.unique', ['attribute' => __('category.category_name')]),
         ];
     }
 }
