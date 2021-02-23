@@ -14,3 +14,5 @@
 <li class='nav-item'><a class='nav-link' href='{{ backpack_url('page') }}'><i class='nav-icon la la-file-o'></i> <span>Static Page</span></a></li>
 <li class='nav-item'><a class='nav-link' href='{{ backpack_url('author') }}'><i class='nav-icon la la-address-card'></i> {{ __('menu.author') }}</a></li>
 <li class='nav-item'><a class='nav-link' href='{{ backpack_url('historytransactiontoken') }}'><i class='nav-icon la la-traffic-light'></i> {{ __('menu.history') }}</a></li>
+<li class='nav-item'><a class='nav-link' href='{{ backpack_url('article') }}'><i class='nav-icon la la-question'></i> Articles</a></li>
+<li class='nav-item'><a class='nav-link' href='{{ backpack_url('tag') }}'><i class='nav-icon la la-question'></i> Tags</a></li>
