@@ -17,6 +17,8 @@ class Article extends Model
 
     CONST DRAFT = 0;
     CONST PUBLISHED = 1;
+    CONST APPROVE = 2;
+    CONST PENDING = 3;
     CONST IS_POST_ADMIN = 1;
     CONST IS_POST_AUTHOR = 0;
 
