@@ -56,16 +56,10 @@ class Article extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function listStatus()
+    public function tags()
     {
-        return collect([
-            [
-                'id' => 1,
-                'name' => 'adasdsa'
-            ]
-        ]);
+        return $this->belongsToMany(Tag::class, 'new_tag', 'new_id', 'tag_id');
     }
-
     /*
     |--------------------------------------------------------------------------
     | SCOPES

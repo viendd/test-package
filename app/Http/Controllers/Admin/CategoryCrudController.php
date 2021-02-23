@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\CategoryRequest;
+use App\Models\Category;
+use App\Models\Language;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 /**
  * Class CategoryCrudController
@@ -42,18 +42,37 @@ class CategoryCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-
         CRUD::addColumn(['name' => 'language_id', 'type' => 'closure', 'label' => __('category.language'), 'function' => function($entry){
             return $entry->language->name;
         }]);
-
-        CRUD::addColumn(['name' => 'parent_id', 'type' => 'closure', 'label' => __('category.category_parent'), 'function' => function($entry){
-            return $entry->category ? $entry->category->name : __('category.category_parent');
-        }]);
-
         CRUD::column('order')->type('number')->label(__('category.order'));
+        CRUD::addColumn('parent');
         CRUD::column('name')->type('text')->label(__('category.category_name'));
         CRUD::column('slug')->type('text');
+        CRUD::addColumn([   // select_multiple: n-n relationship (with pivot table)
+            'label'     => 'Articles', // Table column heading
+            'type'      => 'relationship_count',
+            'name'      => 'articles', // the method that defines the relationship in your Model
+            'wrapper'   => [
+                'href' => function ($crud, $column, $entry, $related_key) {
+                    return backpack_url('article?category_id='.$entry->getKey());
+                },
+            ],
+        ]);
+
+        $this->crud->addFilter(
+            [
+                'name'  => 'language_id',
+                'type'  => 'dropdown',
+                'label' => 'Language'
+            ],
+           Language::all()->pluck('short_name', 'id')->toArray(),
+            function ($value) { // if the filter is active
+                if ($value != 0) {
+                    $this->crud->addClause('where', 'language_id', $value);
+                }
+            }
+        );
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
@@ -91,7 +110,7 @@ class CategoryCrudController extends CrudController
             'label' => __('category.category_parent'),
             'type' => 'select',
             'name' => "parent_id",
-            'entity' => 'category',
+            'entity' => 'parent',
             'model' => "App\Models\Category", // related model
             'attribute' => 'name',
         ]);
@@ -110,19 +129,6 @@ class CategoryCrudController extends CrudController
          * - CRUD::addField(['name' => 'price', 'type' => 'number']));
          */
     }
-
-    public function store(Request $request)
-    {
-        $request->merge(['slug' => Str::slug($request->input('name'))]);
-        $this->parent_store();
-    }
-
-    public function update(Request $request)
-    {
-        $request->merge(['slug' => Str::slug($request->input('name'))]);
-        $this->parent_update();
-    }
-
 
     /**
      * Define what happens when the Update operation is loaded.
