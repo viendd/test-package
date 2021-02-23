@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Tag extends Model
 {
@@ -18,11 +19,10 @@ class Tag extends Model
     protected $table = 'tags';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
-    protected $guarded = ['id'];
-    // protected $fillable = [];
+//    protected $guarded = ['id'];
+    protected $fillable = ['name', 'slug'];
     // protected $hidden = [];
     // protected $dates = [];
-
     /*
     |--------------------------------------------------------------------------
     | FUNCTIONS
@@ -34,7 +34,10 @@ class Tag extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-
+    public function articles()
+    {
+        return $this->belongsToMany(Article::class, 'new_tag', 'tag_id', 'new_id');
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES
@@ -52,4 +55,9 @@ class Tag extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+
+    public function setSlugAttribute($value)
+    {
+        $this->attributes['slug'] = Str::slug($this->attributes['name']);
+    }
 }

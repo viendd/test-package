@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\ArticleRequest;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Tag;
 use App\Models\User;
 use App\Services\UploadService;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
@@ -24,6 +25,11 @@ class ArticleCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation {store as protected parent_store;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation {update as protected parent_update;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\FetchOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\CloneOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\BulkCloneOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\BulkDeleteOperation;
 
     protected $fileService;
 
@@ -83,6 +89,24 @@ class ArticleCrudController extends CrudController
             }
         );
 
+        $this->crud->addFilter([ // select2_multiple filter
+            'name' => 'tags',
+            'type' => 'select2_multiple',
+            'label'=> 'Tags',
+        ], function () {
+            return Tag::all()->keyBy('id')->pluck('name', 'id')->toArray();
+        }, function ($values) { // if the filter is active
+            $this->crud->query = $this->crud->query->whereHas('tags', function ($q) use ($values) {
+                foreach (json_decode($values) as $key => $value) {
+                    if ($key == 0) {
+                        $q->where('tags.id', $value);
+                    } else {
+                        $q->orWhere('tags.id', $value);
+                    }
+                }
+            });
+        });
+
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
@@ -111,7 +135,7 @@ class ArticleCrudController extends CrudController
 
         $this->crud->addField([
             'label' => 'Category',
-            'type' => 'select',
+            'type' => 'relationship',
             'name' => 'category_id',
             'entity' => 'category',
             'attribute' => 'name',
@@ -160,9 +184,14 @@ class ArticleCrudController extends CrudController
         ]);
 
         $this->crud->addField([
-            'label' => 'Reason',
-            'type' => 'text',
-            'name' => 'reason',
+            'label' => 'Tags',
+            'type' => 'relationship',
+            'name' => 'tags', // the method that defines the relationship in your Model
+            'entity' => 'tags', // the method that defines the relationship in your Model
+            'attribute' => 'name', // foreign key attribute that is shown to user
+            'pivot' => true, // on create&update, do you need to add/delete pivot table entries?
+            'inline_create' => ['entity' => 'tag'],
+            'ajax' => true,
         ]);
 
         $this->crud->addField([
@@ -262,5 +291,23 @@ class ArticleCrudController extends CrudController
     {
         $this->crud->field('id')->type('hidden');
         $this->setupCreateOperation();
+    }
+
+    /**
+     * Respond to AJAX calls from the select2 with entries from the Category model.
+     * @return JSON
+     */
+    public function fetchCategory()
+    {
+        return $this->fetch(Category::class);
+    }
+
+    /**
+     * Respond to AJAX calls from the select2 with entries from the Tag model.
+     * @return JSON
+     */
+    public function fetchTags()
+    {
+        return $this->fetch(Tag::class);
     }
 }

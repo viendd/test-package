@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Category extends Model
 {
@@ -40,10 +41,21 @@ class Category extends Model
         return $this->belongsTo(Language::class, 'language_id');
     }
 
-    public function category()
+    public function parent()
     {
         return $this->belongsTo(self::class, 'parent_id');
     }
+
+    public function children()
+    {
+        return $this->hasMany(self::class, 'parent_id');
+    }
+
+    public function articles()
+    {
+        return $this->hasMany(Article::class);
+    }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -62,4 +74,9 @@ class Category extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+
+    public function setSlugAttribute()
+    {
+        $this->attributes['slug'] = Str::slug($this->attributes['name']);
+    }
 }
