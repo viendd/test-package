@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\ArticleRequest;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Language;
 use App\Models\Tag;
 use App\Models\User;
 use App\Services\UploadService;
@@ -25,11 +26,7 @@ class ArticleCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation {store as protected parent_store;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation {update as protected parent_update;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\FetchOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\CloneOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\BulkCloneOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\BulkDeleteOperation;
 
     protected $fileService;
 
@@ -74,6 +71,19 @@ class ArticleCrudController extends CrudController
             return '<img src="'.url($entry->image).'" alt="" width="120" height="120"/>';
         }]);
 
+        $this->crud->addFilter(
+            [
+                'name'  => 'language_id',
+                'type'  => 'dropdown',
+                'label' => 'Language'
+            ],
+            Language::all()->pluck('short_name', 'id')->toArray(),
+            function ($value) { // if the filter is active
+                if ($value != 0) {
+                    $this->crud->addClause('where', 'language_id', $value);
+                }
+            }
+        );
 
         $this->crud->addFilter(
             [
