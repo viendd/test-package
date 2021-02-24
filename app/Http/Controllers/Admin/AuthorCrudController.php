@@ -28,6 +28,7 @@ class AuthorCrudController extends CrudController
         CRUD::setModel(\App\Models\Author::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/author');
         CRUD::setEntityNameStrings('author', 'authors');
+        CRUD::setShowView('admin.author.show');
     }
 
     /**
@@ -54,36 +55,6 @@ class AuthorCrudController extends CrudController
          * - CRUD::column('price')->type('number');
          * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
          */
-    }
-
-    /**
-     * Define what happens when the Create operation is loaded.
-     *
-     * @see https://backpackforlaravel.com/docs/crud-operation-create
-     * @return void
-     */
-    protected function setupCreateOperation()
-    {
-        CRUD::setValidation(AuthorRequest::class);
-
-        CRUD::setFromDb(); // fields
-
-        /**
-         * Fields can be defined using the fluent syntax or array syntax:
-         * - CRUD::field('price')->type('number');
-         * - CRUD::addField(['name' => 'price', 'type' => 'number']));
-         */
-    }
-
-    /**
-     * Define what happens when the Update operation is loaded.
-     *
-     * @see https://backpackforlaravel.com/docs/crud-operation-update
-     * @return void
-     */
-    protected function setupUpdateOperation()
-    {
-        $this->setupCreateOperation();
     }
 
     public function search()
