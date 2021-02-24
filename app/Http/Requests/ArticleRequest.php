@@ -33,9 +33,7 @@ class ArticleRequest extends FormRequest
             'title' => 'required',
             'content' => 'required',
             'image' => 'required',
-            'intro_short' => 'required',
             'status' => 'required',
-            'meta_title' => 'required'
         ];
         if($id){
             unset($rules['image']);

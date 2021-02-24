@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\ArticleRequest;
 use App\Models\Article;
+use App\Models\Author;
 use App\Models\Category;
 use App\Models\Language;
 use App\Models\Tag;
@@ -13,6 +14,7 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 /**
@@ -22,11 +24,13 @@ use Illuminate\Support\Str;
  */
 class ArticleCrudController extends CrudController
 {
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation {search as traitSearch;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation {store as protected parent_store;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation {update as protected parent_update;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\FetchOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+
 
     protected $fileService;
 
@@ -41,6 +45,7 @@ class ArticleCrudController extends CrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/article');
         CRUD::setEntityNameStrings('article', 'articles');
         $this->fileService = app()->make(UploadService::class);
+        CRUD::setListView('admin.article.index');
     }
 
     /**
@@ -51,8 +56,6 @@ class ArticleCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-
-
         CRUD::addColumn(['name' => 'language_id', 'type' => 'closure', 'label' => __('category.language'), 'function' => function($entry){
             return $entry->language->name;
         }]);
@@ -69,6 +72,10 @@ class ArticleCrudController extends CrudController
 
         CRUD::addColumn(['name' => 'image', 'type' => 'closure', 'label' => __('article.image'), 'function' => function($entry){
             return '<img src="'.url($entry->image).'" alt="" width="120" height="120"/>';
+        }]);
+
+        CRUD::addColumn(['name' => 'status', 'type' => 'closure', 'label' => __('article.status'), 'function' => function($entry){
+            return Article::listStatus()[$entry->status];
         }]);
 
         $this->crud->addFilter(
@@ -99,6 +106,30 @@ class ArticleCrudController extends CrudController
             }
         );
 
+        $this->crud->addFilter(
+            [
+                'name'  => 'status',
+                'type'  => 'select2',
+                'label' => __('article.status'),
+            ],
+            Article::listStatus(),
+            function ($value) { // if the filter is active
+                $this->crud->addClause('where', 'status', $value);
+            }
+        );
+
+        $this->crud->addFilter(
+            [
+                'name'  => 'user',
+                'type'  => 'select2',
+                'label' => __('article.author'),
+            ],
+            Author::all()->pluck('name', 'id')->toArray(),
+            function ($value) { // if the filter is active
+                $this->crud->addClause('where', 'user_id', $value);
+            }
+        );
+
         $this->crud->addFilter([ // select2_multiple filter
             'name' => 'tags',
             'type' => 'select2_multiple',
@@ -116,6 +147,7 @@ class ArticleCrudController extends CrudController
                 }
             });
         });
+
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
@@ -319,5 +351,27 @@ class ArticleCrudController extends CrudController
     public function fetchTags()
     {
         return $this->fetch(Tag::class);
+    }
+
+    protected function setupShowOperation()
+    {
+        $this->setupListOperation();
+    }
+
+    public function index()
+    {
+        $this->crud->hasAccessOrFail('list');
+        $this->data['crud'] = $this->crud;
+        $this->data['title'] = $this->crud->getTitle() ?? mb_ucfirst($this->crud->entity_name_plural);
+        $this->data['top'] = $this->crud->model->topWriteArticle();
+
+        // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
+        return view($this->crud->getListView(), $this->data);
+    }
+
+    public function search()
+    {
+        $this->crud->addClause('where','status', '<>', Article::DRAFT);
+        return $this->traitSearch();
     }
 }
