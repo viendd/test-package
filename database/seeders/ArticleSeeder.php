@@ -22,14 +22,15 @@ class ArticleSeeder extends Seeder
     {
         $faker = Factory::create();
         for ($i = 1; $i < 100; $i++){
+            $title = $faker->sentence();
             Article::create([
                 'language_id' => Language::all()->random()->id,
                 'category_id' => Category::all()->random()->id,
                 'user_id' => Author::where('is_admin', Author::MEMBER)->get()->random()->id,
-                'title' => $faker->title,
-                'slug' => Str::slug($faker->title),
+                'title' => $title,
+                'slug' => Str::slug($title),
                 'content' => 'Description',
-                'image' => 'storage/users/default.png',
+                'image' => 'https://source.unsplash.com/random',
                 'is_post_admin' => Article::IS_POST_AUTHOR,
                 'status' => Article::PENDING,
                 'created_date' => Carbon::now(),
