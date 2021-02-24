@@ -17,5 +17,8 @@ return [
     'published' => 'Published',
     'approve' => 'Approve',
     'pending' => 'Pending',
-    'reject' => 'Reject'
+    'reject' => 'Reject',
+    'action' => 'Manipulation',
+    'user_public' => 'User published',
+    'not_public' => 'Not public',
 ];

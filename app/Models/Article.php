@@ -24,6 +24,9 @@ class Article extends Model
     CONST IS_POST_ADMIN = 1;
     CONST IS_POST_AUTHOR = 0;
 
+    CONST IS_TRUST = 1;
+    CONST IS_FAKE = 0;
+
     protected $table = 'articles';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
@@ -69,6 +72,11 @@ class Article extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function userPublish()
+    {
+        return $this->belongsTo(User::class, 'user_public_id');
+    }
+
     public function tags()
     {
         return $this->belongsToMany(Tag::class, 'new_tag', 'new_id', 'tag_id');
@@ -79,10 +87,39 @@ class Article extends Model
     |--------------------------------------------------------------------------
     */
 
+    public function scopeSearchLikeTitle($query, $title)
+    {
+        return $query->where('title', 'like', '%'.$title.'%');
+    }
+
     public function scopeTopWriteArticle($query)
     {
         return $query->select('user_id', DB::raw('COUNT(user_id) as sum'))
             ->where('status', Article::APPROVE)
+            ->groupBy('user_id')
+            ->with('user')
+            ->orderBy(DB::raw('COUNT(user_id)'), 'DESC')
+            ->take(5)
+            ->get();
+    }
+
+    public static function topCategoriesInMonth($month = null, $year = null)
+    {
+        return self::select('category_id', DB::raw('COUNT(category_id) as sum'))
+            ->whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
+            ->groupBy('category_id')
+            ->with('category')
+            ->orderBy(DB::raw('COUNT(category_id)'), 'DESC')
+            ->take(5)
+            ->get();
+    }
+
+    public static function topUserInMonth($month = null, $year = null)
+    {
+        return self::select('user_id', DB::raw('COUNT(user_id) as sum'))
+            ->whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
             ->groupBy('user_id')
             ->with('user')
             ->orderBy(DB::raw('COUNT(user_id)'), 'DESC')
