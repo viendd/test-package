@@ -23,7 +23,7 @@ class UserMarkArticleSeeder extends Seeder
         DB::table('user_mark_article')->insert([
             [
                 'user_id' => Author::where('is_admin', '<>', User::IS_ADMIN)->get()->random()->id,
-                'article_id' => Article::where('status', Article::APPROVE)->get()->random()->id,
+                'article_id' => Article::all()->random()->id,
                 'is_trust' => Article::IS_TRUST,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -31,7 +31,7 @@ class UserMarkArticleSeeder extends Seeder
 
             [
                 'user_id' => Author::where('is_admin', '<>', User::IS_ADMIN)->get()->random()->id,
-                'article_id' => Article::where('status', Article::APPROVE)->get()->random()->id,
+                'article_id' => Article::all()->random()->id,
                 'is_trust' => Article::IS_FAKE,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -39,7 +39,7 @@ class UserMarkArticleSeeder extends Seeder
 
             [
                 'user_id' => Author::where('is_admin', '<>', User::IS_ADMIN)->get()->random()->id,
-                'article_id' => Article::where('status', Article::APPROVE)->get()->random()->id,
+                'article_id' => Article::all()->random()->id,
                 'is_trust' => Article::IS_TRUST,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
