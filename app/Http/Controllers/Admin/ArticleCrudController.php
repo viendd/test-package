@@ -79,6 +79,9 @@ class ArticleCrudController extends CrudController
                 return backpack_url('author/' .$entry->user_id. '/show');
             },
         ]]);
+        CRUD::addColumn(['name' => 'created_date', 'type' => 'closure', 'label' => __('article.created_date'), 'function' => function($entry){
+            return Carbon::parse($entry->created_at)->format('d/m/Y');
+        }]);
 
         CRUD::addColumn(['name' => 'status', 'type' => 'closure', 'label' => __('article.status'), 'function' => function($entry){
             return Article::listStatus()[$entry->status];
@@ -286,6 +289,7 @@ class ArticleCrudController extends CrudController
         if ($request->status == Article::PUBLISHED) {
             $extra['user_public_id'] = auth()->user()->id;
             $extra['publish_date'] = Carbon::now();
+            $extra['status'] = Article::APPROVE;
         }
 
         return $extra;
