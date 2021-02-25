@@ -17,5 +17,8 @@ return [
     'published' => 'Công khai',
     'approve' => 'Đã duyệt',
     'pending' => 'Chờ duyệt',
-    'reject' => 'Không duyệt'
+    'reject' => 'Không duyệt',
+    'action' => 'Thao tác',
+    'user_public' => 'Tài khoản published',
+    'not_public' => 'Chưa được công khai'
 ];

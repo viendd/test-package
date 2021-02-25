@@ -78,6 +78,15 @@ class ArticleCrudController extends CrudController
             return Article::listStatus()[$entry->status];
         }]);
 
+        CRUD::addColumn(['name' => 'user_public_id', 'type' => 'closure', 'label' => __('article.user_public'), 'function' => function($entry){
+            return $entry->userPublish ? $entry->userPublish->name : __('article.not_public');
+        }]);
+
+        CRUD::addColumn(['name' => 'action', 'type' => 'closure', 'label' => 'Approve/Reject', 'function' =>  function ($entry) {
+            $crud = $this->crud;
+            return view('admin.article.action', ['entry' => $entry, 'crud'=>$crud, 'status_pending' => Article::PENDING, 'status_approve' => Article::APPROVE, 'status_reject' => Article::REJECT ])->render();
+        }]);
+
         $this->crud->addFilter(
             [
                 'name'  => 'language_id',
@@ -265,7 +274,7 @@ class ArticleCrudController extends CrudController
          */
     }
 
-    public function setExtraData(Request $request, $action, $pathUrl = null)
+    public function setExtraData(Request $request, $action)
     {
         $extra['user_id'] = auth()->user()->id;
         $extra['slug'] = Str::slug($request->title);
@@ -319,8 +328,18 @@ class ArticleCrudController extends CrudController
     public function update(Request $request)
     {
         $article = $this->crud->model->find($request->id);
-        $request->merge($this->setExtraData($request, 'update', $article->image));
-        $this->parent_update();
+        $request->merge($this->setExtraData($request, 'update'));
+        $this->crud->setRequest($this->handleImage($this->crud->getRequest(), 'update', $article->image));
+        $item = $this->crud->update($this->crud->getRequest()->id,$this->crud->getRequest()->all());
+        $this->data['entry'] = $this->crud->entry = $item;
+
+        // show a success message
+        \Alert::success(trans('backpack::crud.update_success'))->flash();
+
+        // save the redirect choice for next time
+        $this->crud->setSaveAction();
+
+        return $this->crud->performSaveAction($item->getKey());
     }
 
     /**
@@ -373,5 +392,17 @@ class ArticleCrudController extends CrudController
     {
         $this->crud->addClause('where','status', '<>', Article::DRAFT);
         return $this->traitSearch();
+    }
+
+    public function updateStatus($id, Request $request)
+    {
+        $article = Article::findOrFail($id);
+        $article->update(['status' => $request->status]);
+        $article->refresh();
+        if($article->status == Article::APPROVE){
+            $article->update(['user_public_id' => auth()->user()->id, 'publish_date' => Carbon::now()]);
+        }
+        \Alert::success(trans('backpack::crud.update_success'))->flash();
+        return redirect()->route('article.index');
     }
 }
