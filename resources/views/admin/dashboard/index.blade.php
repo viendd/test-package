@@ -10,8 +10,8 @@
     $breadcrumbs = $breadcrumbs ?? $defaultBreadcrumbs;
 @endphp
 <script>
-    function filterData(event, form){
-        $('#' + form).submit();
+    function filterData(event){
+        $('#filter_date').submit();
     }
 </script>
 @section('header')
@@ -57,26 +57,26 @@
         @endphp
         <div class="col-md-12">
             <div class="row">
-                <div class="col-md-1">
-                    <form action="{{route('dashboard.index')}}" id="filter_month">
-                        <select name="month" id="month" onchange="filterData(event, 'filter_month')">
-                            @for($i=1;$i<=12;$i++)
-                                <option value="{{$i}}" {{ $month== $i ? 'selected' : ''}}> {{__('dashboard.month')}} {{$i}}</option>
-                            @endfor
-                        </select>
-                    </form>
-                </div>
-                <div class="col-md-1">
-                    <form action="{{route('dashboard.index')}}" id="filter_year">
-                        <select name="year" id="year" onchange="filterData(event, 'filter_year')">
-                            @for($i=\Carbon\Carbon::now()->year; $i >= 2010;$i--)
-                                <option value="{{$i}}" {{$year == $i ? 'selected' : ''}}> {{__('dashboard.year')}} {{$i}}</option>
-                            @endfor
-                        </select>
+                    <form action="{{route('dashboard.index')}}" id="filter_date">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <select name="month" id="month" onchange="filterData(event)">
+                                    @for($i=1;$i<=12;$i++)
+                                        <option value="{{$i}}" {{ $month== $i ? 'selected' : ''}}> {{__('dashboard.month')}} {{$i}}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <select name="year" id="year" onchange="filterData(event)">
+                                    @for($i=\Carbon\Carbon::now()->year; $i >= 2010;$i--)
+                                        <option value="{{$i}}" {{$year == $i ? 'selected' : ''}}> {{__('dashboard.year')}} {{$i}}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
-        </div>
         <div class="col-md-4">
             <table class="table">
                 <thead>

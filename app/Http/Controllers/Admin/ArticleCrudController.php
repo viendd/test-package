@@ -46,6 +46,8 @@ class ArticleCrudController extends CrudController
         CRUD::setEntityNameStrings('article', 'articles');
         $this->fileService = app()->make(UploadService::class);
         CRUD::setListView('admin.article.index');
+        $this->crud->addButtonFromView('line', 'approve', 'approve', 'beginning');
+        $this->crud->addButtonFromView('line', 'reject', 'reject', 'beginning');
     }
 
     /**
@@ -60,19 +62,23 @@ class ArticleCrudController extends CrudController
             return $entry->language->name;
         }]);
 
+        CRUD::column('title')->type('text');
+
         CRUD::addColumn(['name' => 'parent_id', 'type' => 'closure', 'label' => __('category.category_parent'), 'function' => function($entry){
             return $entry->category ? $entry->category->name : __('category.category_parent');
-        }]);
+        }, 'wrapper'   => [
+            'href' => function ($crud, $column, $entry, $related_key) {
+                return backpack_url('category/' .$entry->category_id. '/show');
+            },
+        ]]);
 
         CRUD::addColumn(['name' => 'user_id', 'type' => 'closure', 'label' => __('article.user_created'), 'function' => function($entry){
             return $entry->user ? $entry->user->name : null;
-        }]);
-
-        CRUD::column('title')->type('text');
-
-        CRUD::addColumn(['name' => 'image', 'type' => 'closure', 'label' => __('article.image'), 'function' => function($entry){
-            return '<img src="'.url($entry->image).'" alt="" width="120" height="120"/>';
-        }]);
+        }, 'wrapper'   => [
+            'href' => function ($crud, $column, $entry, $related_key) {
+                return backpack_url('author/' .$entry->user_id. '/show');
+            },
+        ]]);
 
         CRUD::addColumn(['name' => 'status', 'type' => 'closure', 'label' => __('article.status'), 'function' => function($entry){
             return Article::listStatus()[$entry->status];
@@ -80,11 +86,6 @@ class ArticleCrudController extends CrudController
 
         CRUD::addColumn(['name' => 'user_public_id', 'type' => 'closure', 'label' => __('article.user_public'), 'function' => function($entry){
             return $entry->userPublish ? $entry->userPublish->name : __('article.not_public');
-        }]);
-
-        CRUD::addColumn(['name' => 'action', 'type' => 'closure', 'label' => 'Approve/Reject', 'function' =>  function ($entry) {
-            $crud = $this->crud;
-            return view('admin.article.action', ['entry' => $entry, 'crud'=>$crud, 'status_pending' => Article::PENDING, 'status_approve' => Article::APPROVE, 'status_reject' => Article::REJECT ])->render();
         }]);
 
         $this->crud->addFilter(
@@ -394,14 +395,20 @@ class ArticleCrudController extends CrudController
         return $this->traitSearch();
     }
 
-    public function updateStatus($id, Request $request)
+    public function approve($id)
     {
         $article = Article::findOrFail($id);
-        $article->update(['status' => $request->status]);
+        $article->update(['status' => Article::APPROVE, 'user_public_id' => auth()->user()->id, 'publish_date' => Carbon::now()]);
         $article->refresh();
-        if($article->status == Article::APPROVE){
-            $article->update(['user_public_id' => auth()->user()->id, 'publish_date' => Carbon::now()]);
-        }
+        \Alert::success(trans('backpack::crud.update_success'))->flash();
+        return redirect()->route('article.index');
+    }
+
+    public function reject($id)
+    {
+        $article = Article::findOrFail($id);
+        $article->update(['status' => Article::REJECT]);
+        $article->refresh();
         \Alert::success(trans('backpack::crud.update_success'))->flash();
         return redirect()->route('article.index');
     }

@@ -18,7 +18,8 @@ Route::group([
     Route::crud('author', 'AuthorCrudController');
     Route::crud('historytransactiontoken', 'HistoryTransactionTokenCrudController');
     Route::crud('article', 'ArticleCrudController');
-    Route::post('article/{id}/status', 'ArticleCrudController@updateStatus')->name('article.updateStatus');
+    Route::get('article/{id}/approve', 'ArticleCrudController@approve');
+    Route::get('article/{id}/reject', 'ArticleCrudController@reject');
     Route::crud('tag', 'TagCrudController');
     Route::crud('dashboard', 'DashboardCrudController');
 }); // this should be the absolute last line of this file
