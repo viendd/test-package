@@ -23,10 +23,11 @@
                     <p><i class="far fa-thumbs-up"></i> <a href=""> {{$author->name}}</a></p>
                 @endforeach
             </div>
+            @endif
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
-            @endif
         </div>
     </div>
 </div>
