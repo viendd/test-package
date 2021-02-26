@@ -19,6 +19,8 @@ class CategoryCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation { store as protected parent_store;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation { update as protected parent_update;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+
 
     use \Backpack\CRUD\app\Http\Controllers\Operations\InlineCreateOperation;
 
@@ -55,7 +57,7 @@ class CategoryCrudController extends CrudController
             'name'      => 'articles', // the method that defines the relationship in your Model
             'wrapper'   => [
                 'href' => function ($crud, $column, $entry, $related_key) {
-                    return backpack_url('article?category_id='.$entry->getKey());
+                    return backpack_url('article?categories='.$entry->getKey());
                 },
             ],
         ]);
@@ -128,6 +130,11 @@ class CategoryCrudController extends CrudController
          * - CRUD::field('price')->type('number');
          * - CRUD::addField(['name' => 'price', 'type' => 'number']));
          */
+    }
+
+    protected function setupShowOperation()
+    {
+        $this->setupListOperation();
     }
 
     /**

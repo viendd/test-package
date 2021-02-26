@@ -24,6 +24,7 @@ class HistoryTransactionToken extends Model
     // protected $hidden = [];
     // protected $dates = [];
     const TYPE_SEND = 1;
+    const TYPE_RECEIVE = 2;
     /*
     |--------------------------------------------------------------------------
     | FUNCTIONS

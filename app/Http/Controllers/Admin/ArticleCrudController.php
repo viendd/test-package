@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\ArticleRequest;
 use App\Models\Article;
+use App\Models\Author;
 use App\Models\Category;
 use App\Models\Language;
 use App\Models\Tag;
@@ -13,6 +14,7 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 /**
@@ -22,11 +24,13 @@ use Illuminate\Support\Str;
  */
 class ArticleCrudController extends CrudController
 {
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation {search as traitSearch;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation {store as protected parent_store;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation {update as protected parent_update;}
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\FetchOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+
 
     protected $fileService;
 
@@ -41,6 +45,10 @@ class ArticleCrudController extends CrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/article');
         CRUD::setEntityNameStrings('article', 'articles');
         $this->fileService = app()->make(UploadService::class);
+        CRUD::setListView('admin.article.index');
+        CRUD::setShowView('admin.article.show');
+        $this->crud->addButtonFromView('line', 'approve', 'approve', 'beginning');
+        $this->crud->addButtonFromView('line', 'reject', 'reject', 'beginning');
     }
 
     /**
@@ -51,24 +59,37 @@ class ArticleCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-
-
         CRUD::addColumn(['name' => 'language_id', 'type' => 'closure', 'label' => __('category.language'), 'function' => function($entry){
             return $entry->language->name;
         }]);
 
+        CRUD::column('title')->type('text');
+
         CRUD::addColumn(['name' => 'parent_id', 'type' => 'closure', 'label' => __('category.category_parent'), 'function' => function($entry){
             return $entry->category ? $entry->category->name : __('category.category_parent');
-        }]);
+        }, 'wrapper'   => [
+            'href' => function ($crud, $column, $entry, $related_key) {
+                return backpack_url('category/' .$entry->category_id. '/show');
+            },
+        ]]);
 
         CRUD::addColumn(['name' => 'user_id', 'type' => 'closure', 'label' => __('article.user_created'), 'function' => function($entry){
             return $entry->user ? $entry->user->name : null;
+        }, 'wrapper'   => [
+            'href' => function ($crud, $column, $entry, $related_key) {
+                return backpack_url('author/' .$entry->user_id. '/show');
+            },
+        ]]);
+        CRUD::addColumn(['name' => 'created_date', 'type' => 'closure', 'label' => __('article.created_date'), 'function' => function($entry){
+            return Carbon::parse($entry->created_at)->format('d/m/Y');
         }]);
 
-        CRUD::column('title')->type('text');
+        CRUD::addColumn(['name' => 'status', 'type' => 'closure', 'label' => __('article.status'), 'function' => function($entry){
+            return Article::listStatus()[$entry->status];
+        }]);
 
-        CRUD::addColumn(['name' => 'image', 'type' => 'closure', 'label' => __('article.image'), 'function' => function($entry){
-            return '<img src="'.url($entry->image).'" alt="" width="120" height="120"/>';
+        CRUD::addColumn(['name' => 'user_public_id', 'type' => 'closure', 'label' => __('article.user_public'), 'function' => function($entry){
+            return $entry->userPublish ? $entry->userPublish->name : __('article.not_public');
         }]);
 
         $this->crud->addFilter(
@@ -99,6 +120,30 @@ class ArticleCrudController extends CrudController
             }
         );
 
+        $this->crud->addFilter(
+            [
+                'name'  => 'status',
+                'type'  => 'select2',
+                'label' => __('article.status'),
+            ],
+            Article::listStatus(),
+            function ($value) { // if the filter is active
+                $this->crud->addClause('where', 'status', $value);
+            }
+        );
+
+        $this->crud->addFilter(
+            [
+                'name'  => 'user',
+                'type'  => 'select2',
+                'label' => __('article.author'),
+            ],
+            Author::all()->pluck('name', 'id')->toArray(),
+            function ($value) { // if the filter is active
+                $this->crud->addClause('where', 'user_id', $value);
+            }
+        );
+
         $this->crud->addFilter([ // select2_multiple filter
             'name' => 'tags',
             'type' => 'select2_multiple',
@@ -116,6 +161,7 @@ class ArticleCrudController extends CrudController
                 }
             });
         });
+
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
@@ -190,7 +236,7 @@ class ArticleCrudController extends CrudController
             'label' => "Status",
             'name' => "status",
             'type' => 'select_from_array',
-            'options' => [Article::DRAFT => 'Draft', Article::PUBLISHED => 'Published'],
+            'options' => [Article::STATUS_PUBLISHED => 'Published', Article::STATUS_DRAFT => 'Draft'],
         ]);
 
         $this->crud->addField([
@@ -233,7 +279,7 @@ class ArticleCrudController extends CrudController
          */
     }
 
-    public function setExtraData(Request $request, $action, $pathUrl = null)
+    public function setExtraData(Request $request, $action)
     {
         $extra['user_id'] = auth()->user()->id;
         $extra['slug'] = Str::slug($request->title);
@@ -241,9 +287,10 @@ class ArticleCrudController extends CrudController
         if ($action == 'create') {
             $extra['created_date'] = Carbon::now();
         }
-        if ($request->status == Article::PUBLISHED) {
+        if ($request->status == Article::STATUS_PUBLISHED) {
             $extra['user_public_id'] = auth()->user()->id;
             $extra['publish_date'] = Carbon::now();
+            $extra['status'] = Article::STATUS_APPROVE;
         }
 
         return $extra;
@@ -287,8 +334,18 @@ class ArticleCrudController extends CrudController
     public function update(Request $request)
     {
         $article = $this->crud->model->find($request->id);
-        $request->merge($this->setExtraData($request, 'update', $article->image));
-        $this->parent_update();
+        $request->merge($this->setExtraData($request, 'update'));
+        $this->crud->setRequest($this->handleImage($this->crud->getRequest(), 'update', $article->image));
+        $item = $this->crud->update($this->crud->getRequest()->id,$this->crud->getRequest()->all());
+        $this->data['entry'] = $this->crud->entry = $item;
+
+        // show a success message
+        \Alert::success(trans('backpack::crud.update_success'))->flash();
+
+        // save the redirect choice for next time
+        $this->crud->setSaveAction();
+
+        return $this->crud->performSaveAction($item->getKey());
     }
 
     /**
@@ -319,5 +376,84 @@ class ArticleCrudController extends CrudController
     public function fetchTags()
     {
         return $this->fetch(Tag::class);
+    }
+
+    protected function setupShowOperation()
+    {
+        $this->setupListOperation();
+    }
+
+    public function index()
+    {
+        $this->crud->hasAccessOrFail('list');
+        $this->data['crud'] = $this->crud;
+        $this->data['title'] = $this->crud->getTitle() ?? mb_ucfirst($this->crud->entity_name_plural);
+        $this->data['top'] = $this->crud->model->topWriteArticle();
+
+        // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
+        return view($this->crud->getListView(), $this->data);
+    }
+
+    public function show($id)
+    {
+        $this->crud->addColumn([
+            'label' => 'Information emoji',
+            'name' => 'info_emoji',
+            'type' => 'closure',
+            'function' => function($entry){
+                return view('admin.article.info_emoji', ['entry' => $entry, 'reaction' => $entry->userReactionArticle, 'mark' => $entry->userMarkArticle()]);
+            }
+        ]);
+        $this->crud->hasAccessOrFail('show');
+        $this->data['crud'] = $this->crud;
+        $this->crud->addColumn([
+            'label' => 'Image',
+            'name' => 'image',
+            'type' => 'closure',
+            'function' => function($entry){
+                return '<img src="'.url($entry->image).'" with="200" height="200">';
+            }
+        ]);
+        $this->crud->addColumn('publish_date');
+        $this->crud->addColumn('intro_short');
+        $this->crud->addColumn([
+            'label' => 'Content',
+            'name' => 'content',
+            'type' => 'closure',
+            'function' => function($entry){
+                return strip_tags($entry->content);
+            }
+        ]);
+        $this->crud->addColumn('view');
+        $this->crud->addColumn('meta_title');
+        $this->crud->addColumn('meta_description');
+        $this->crud->addColumn('meta_keyword');
+        $this->data['title'] = $this->crud->getTitle() ?? mb_ucfirst($this->crud->entity_name_plural);
+        $this->data['entry'] =$this->crud->model->findOrFail($id);
+        return view($this->crud->getShowView(), $this->data);
+    }
+
+    public function search()
+    {
+        $this->crud->addClause('where','status', '<>', Article::STATUS_DRAFT);
+        return $this->traitSearch();
+    }
+
+    public function approve($id)
+    {
+        $article = Article::findOrFail($id);
+        $article->update(['status' => Article::STATUS_APPROVE, 'user_public_id' => auth()->user()->id, 'publish_date' => Carbon::now()]);
+        $article->refresh();
+        \Alert::success(trans('backpack::crud.update_success'))->flash();
+        return redirect()->route('article.index');
+    }
+
+    public function reject($id)
+    {
+        $article = Article::findOrFail($id);
+        $article->update(['status' => Article::STATUS_REJECT]);
+        $article->refresh();
+        \Alert::success(trans('backpack::crud.update_success'))->flash();
+        return redirect()->route('article.index');
     }
 }

@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\AuthorRequest;
 use App\Models\Author;
+use App\Models\HistoryTransactionToken;
 use App\Models\User;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Illuminate\Http\Request;
 
 /**
  * Class AuthorCrudController
@@ -61,5 +63,45 @@ class AuthorCrudController extends CrudController
     {
         $this->crud->addClause('where', 'is_admin', '<>', User::IS_ADMIN);
         return $this->traitSearch();
+    }
+
+    public function show($id, Request $request)
+    {
+        $this->crud->hasAccessOrFail('show');
+        $this->data['crud'] = $this->crud;
+        $this->data['title'] = $this->crud->getTitle() ?? mb_ucfirst($this->crud->entity_name_plural);
+        $this->data['user'] = Author::findOrFail($id);
+        $this->data['articles'] = $this->data['user']->articles();
+        $this->data['markArticles'] = $this->data['user']->markArticles();
+        if($request->status_article && $request->status_article != 'null'){
+            $this->data['articles'] = $this->data['articles']->where('status', $request->status_article);
+        }
+        if($request->search_list_article && $request->search_list_article != ''){
+            $this->data['articles'] = $this->data['articles']->searchLikeTitle($request->search_list_article);
+        }
+        if(isset($request->status_mark) && $request->status_mark != 'null'){
+            $this->data['markArticles'] = $this->data['markArticles']->wherePivot('is_trust', $request->status_mark);
+        }
+        if($request->search_list_article_mark && $request->search_list_article_mark != ''){
+            $this->data['markArticles'] = $this->data['markArticles']->searchLikeTitle($request->search_list_article_mark);
+        }
+        $this->data['markArticles'] = $this->data['markArticles']->get();
+        $this->data['articles'] = $this->data['articles']->get();
+        $this->data['transactions'] = HistoryTransactionToken::where('user_send_id', $id)->orWhere('user_receive_id', $id);
+        if(isset($request->filter_month) && $request->filter_month != 'null'){
+            $this->data['transactions'] = $this->data['transactions']->whereMonth('created_at', '=', $request->filter_month);
+        }
+        if(isset($request->status_transaction) && $request->status_transaction != 'null'){
+            if($request->status_transaction == HistoryTransactionToken::TYPE_SEND){
+                $this->data['transactions'] = $this->data['transactions']->where('user_send_id', $id);
+            }
+            if($request->status_transaction == HistoryTransactionToken::TYPE_RECEIVE){
+                $this->data['transactions'] = $this->data['transactions']->where('user_receive_id', $id);
+            }
+        }
+        $this->data['transactions'] = $this->data['transactions']->get();
+
+        http_build_query(array_merge($_GET, array("tab"=> $request->tab)));
+        return view($this->crud->getShowView(), $this->data);
     }
 }

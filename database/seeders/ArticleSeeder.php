@@ -32,7 +32,7 @@ class ArticleSeeder extends Seeder
                 'content' => 'Description',
                 'image' => 'https://source.unsplash.com/random',
                 'is_post_admin' => Article::IS_POST_AUTHOR,
-                'status' => Article::PENDING,
+                'status' => Article::STATUS_PENDING,
                 'created_date' => Carbon::now(),
             ]);
         }
