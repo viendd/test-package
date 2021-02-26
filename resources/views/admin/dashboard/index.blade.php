@@ -78,6 +78,7 @@
                 </div>
             </div>
         <div class="col-md-4">
+            {{__('dashboard.title_category')}}
             <table class="table">
                 <thead>
                 <tr>
@@ -96,9 +97,9 @@
                 @endforeach
                 </tbody>
             </table>
-            {{__('dashboard.title_category')}}
         </div>
         <div class="col-md-4">
+            {{__('dashboard.title_user')}}
             <table class="table">
                 <thead>
                 <tr>
@@ -117,9 +118,9 @@
                 @endforeach
                 </tbody>
             </table>
-            {{__('dashboard.title_user')}}
         </div>
         <div class="col-md-4">
+            {{__('dashboard.title_user_mark')}}
             <table class="table">
                 <thead>
                 <tr>
@@ -138,7 +139,6 @@
                 @endforeach
                 </tbody>
             </table>
-            {{__('dashboard.title_user_mark')}}
         </div>
     </div>
 @endsection

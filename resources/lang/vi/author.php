@@ -26,6 +26,11 @@ return [
     'pending' => 'Chờ duyệt',
     'reject' => 'Không duyệt',
     'all_month' => 'Tất cả các tháng',
-    'month' => 'Tháng'
+    'month' => 'Tháng',
+    'created_date' => 'Ngày tạo',
+    'amount_user_follow' => 'Số lượng theo dõi',
+    'amount_followed' => 'Số lượng được theo dõi',
+    'address' => 'Địa chỉ',
+    'company' => 'Công ty'
 
 ];

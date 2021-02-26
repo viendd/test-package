@@ -26,5 +26,9 @@ return [
     'pending' => 'Pending',
     'reject' => 'Reject',
     'all_month' => 'All month',
-    'month' => 'Month'
+    'month' => 'Month',
+    'amount_user_follow' => 'Amount Follow',
+    'amount_followed' => 'Amount followed',
+    'address' => 'Address',
+    'company' => 'Company'
 ];

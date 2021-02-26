@@ -20,5 +20,6 @@ return [
     'reject' => 'Không duyệt',
     'action' => 'Thao tác',
     'user_public' => 'Tài khoản published',
-    'not_public' => 'Chưa được công khai'
+    'not_public' => 'Chưa được công khai',
+    'created_date' => 'Ngày tạo',
 ];

@@ -60,28 +60,62 @@
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show <?= !isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] == "profile")? "active" : "" ?>" id="home" role="tabpanel" aria-labelledby="home-tab">
                             <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">Avatar</label>
+                                <br>
+                                @if($user->avatar)
+                                    <img src="{{url($user->avatar)}}" alt="" width="140" height="140">
+                                @else
+                                    <img src="{{url('storage/users/default.png')}}" alt="" width="140" height="140">
+                                @endif
+
+                            </div>
+                            <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" value="{{$user->email}}" disabled>
                             </div>
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">{{__('author.name')}}</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1" value="{{$user->name}}" placeholder="name@example.com" disabled>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" value="{{$user->name}}" disabled>
                             </div>
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">{{__('author.phone')}}</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1" value="{{$user->phone}}" placeholder="name@example.com" disabled>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" value="{{$user->phone}}" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">{{__('author.introduction')}}</label>
+                                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" value="{{$user->introduction}}" disabled>
                             </div>
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">{{__('author.amount_token')}}</label>
-                                <input type="number" class="form-control" id="exampleFormControlInput1" value="{{$user->token}}" placeholder="name@example.com" disabled>
+                                <input type="number" class="form-control" id="exampleFormControlInput1" value="{{$user->token}}" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">{{__('author.amount_token')}}</label>
+                                <input type="number" class="form-control" id="exampleFormControlInput1" value="{{$user->token}}" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">{{__('author.amount_user_follow')}}</label>
+                                <input type="number" class="form-control" id="exampleFormControlInput1" value="{{$user->followUsers->count()}}" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">{{__('author.amount_followed')}}</label>
+                                <input type="number" class="form-control" id="exampleFormControlInput1" value="{{$user->followed->count()}}" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">{{__('author.address')}}</label>
+                                <input type="number" class="form-control" id="exampleFormControlInput1" value="{{$user->address}}" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">{{__('author.company')}}</label>
+                                <input type="number" class="form-control" id="exampleFormControlInput1" value="{{$user->company}}" disabled>
                             </div>
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">Facebook</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1" value="{{$user->facebook}}" placeholder="name@example.com" disabled>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" value="{{$user->facebook}}" disabled>
                             </div>
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">Instagram</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1" value="{{$user->instagram}}" placeholder="name@example.com" disabled>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" value="{{$user->instagram}}" disabled>
                             </div>
                         </div>
                         <div class="tab-pane fade <?= (isset($_GET['tab']) && $_GET['tab'] == "list-articles")? "active show" : "" ?>" id="profile" role="tabpanel" aria-labelledby="profile-tab">
@@ -98,9 +132,9 @@
                                                     <input name="search_list_article" type="hidden" value="{{!isset($_GET['search_list_article']) ? '' : $_GET['search_list_article']}}">
                                                     <select name="status_article" id="status_article" onchange="filterStatusArticle(event, 'form_status_article')">
                                                         <option value="null">{{__('author.select_status')}}</option>
-                                                        <option value="{{\App\Models\Article::APPROVE}}" {{isset($_GET['status_article']) && $_GET['status_article'] == \App\Models\Article::APPROVE ? 'selected' : '' }}>{{__('author.approve')}}</option>
-                                                        <option value="{{\App\Models\Article::PENDING}}" {{isset($_GET['status_article']) && $_GET['status_article'] == \App\Models\Article::PENDING ? 'selected' : '' }}>{{__('author.pending')}}</option>
-                                                        <option value="{{\App\Models\Article::REJECT}}" {{isset($_GET['status_article']) && $_GET['status_article'] == \App\Models\Article::REJECT ? 'selected' : '' }}>{{__('author.reject')}}</option>
+                                                        <option value="{{\App\Models\Article::STATUS_APPROVE}}" {{isset($_GET['status_article']) && $_GET['status_article'] == \App\Models\Article::STATUS_APPROVE ? 'selected' : '' }}>{{__('author.approve')}}</option>
+                                                        <option value="{{\App\Models\Article::STATUS_PENDING}}" {{isset($_GET['status_article']) && $_GET['status_article'] == \App\Models\Article::STATUS_PENDING ? 'selected' : '' }}>{{__('author.pending')}}</option>
+                                                        <option value="{{\App\Models\Article::STATUS_REJECT}}" {{isset($_GET['status_article']) && $_GET['status_article'] == \App\Models\Article::STATUS_REJECT ? 'selected' : '' }}>{{__('author.reject')}}</option>
                                                     </select>
                                                 </form>
                                             </div>
