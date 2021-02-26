@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
-class Author extends Model
+class UserReactionArticle extends Model
 {
     use CrudTrait;
 
@@ -15,7 +16,7 @@ class Author extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'users';
+    protected $table = 'user_reaction_article';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -23,8 +24,6 @@ class Author extends Model
     // protected $hidden = [];
     // protected $dates = [];
 
-    CONST MEMBER = 0;
-    CONST AUTHOR = 2;
     /*
     |--------------------------------------------------------------------------
     | FUNCTIONS
@@ -37,23 +36,9 @@ class Author extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function articles()
+    public function user()
     {
-        return $this->hasMany(Article::class, 'user_id');
-    }
-
-    public function markArticles()
-    {
-        return $this->belongsToMany(Article::class, 'user_mark_article', 'user_id', 'article_id')->withPivot('is_trust', 'evidence','created_at');
-    }
-
-    public function followUsers()
-    {
-        return $this->belongsToMany(self::class, 'follows', 'user_id', 'user_follow_id');
-    }
-    public function followed()
-    {
-        return $this->belongsToMany(self::class, 'follows', 'user_follow_id', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /*

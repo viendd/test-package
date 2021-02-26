@@ -16,15 +16,17 @@ class Article extends Model
     |--------------------------------------------------------------------------
     */
 
-    CONST DRAFT = 0;
-    CONST PUBLISHED = 1;
-    CONST APPROVE = 2;
-    CONST PENDING = 3;
-    CONST REJECT = 4;
+    CONST STATUS_DRAFT = 0;
+    CONST STATUS_PUBLISHED = 1;
+    CONST STATUS_APPROVE = 2;
+    CONST STATUS_PENDING = 3;
+    CONST STATUS_REJECT = 4;
     CONST IS_POST_ADMIN = 1;
     CONST IS_POST_AUTHOR = 0;
 
     CONST IS_TRUST = 1;
+    CONST IS_LIKE = 1;
+    CONST UN_LIKE = 0;
     CONST IS_FAKE = 0;
 
     protected $table = 'articles';
@@ -44,11 +46,11 @@ class Article extends Model
     public static function listStatus()
     {
         return [
-            self::DRAFT => __('article.draft'),
-            self::PUBLISHED => __('article.published'),
-            self::APPROVE => __('article.approve'),
-            self::PENDING => __('article.pending'),
-            self::REJECT => __('article.reject')
+            self::STATUS_DRAFT => __('article.draft'),
+            self::STATUS_PUBLISHED => __('article.published'),
+            self::STATUS_APPROVE => __('article.approve'),
+            self::STATUS_PENDING => __('article.pending'),
+            self::STATUS_REJECT => __('article.reject')
         ];
     }
 
@@ -81,6 +83,16 @@ class Article extends Model
     {
         return $this->belongsToMany(Tag::class, 'new_tag', 'new_id', 'tag_id');
     }
+
+    public function userMarkArticle()
+    {
+        return $this->hasMany(UserMarkArticle::class, 'article_id');
+    }
+
+    public function userReactionArticle()
+    {
+        return $this->hasMany(UserReactionArticle::class, 'article_id');
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES
@@ -95,7 +107,7 @@ class Article extends Model
     public function scopeTopWriteArticle($query)
     {
         return $query->select('user_id', DB::raw('COUNT(user_id) as sum'))
-            ->where('status', Article::APPROVE)
+            ->where('status', Article::STATUS_APPROVE)
             ->groupBy('user_id')
             ->with('user')
             ->orderBy(DB::raw('COUNT(user_id)'), 'DESC')
