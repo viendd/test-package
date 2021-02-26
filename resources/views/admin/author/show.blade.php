@@ -130,7 +130,7 @@
                                                 <form action="{{route('author.show', ['id' => $user->id])}}" id="form_status_article">
                                                     <input name="tab" type="hidden" value="{{!isset($_GET['tab']) ? 'profile' : $_GET['tab']}}">
                                                     <input name="search_list_article" type="hidden" value="{{!isset($_GET['search_list_article']) ? '' : $_GET['search_list_article']}}">
-                                                    <select name="status_article" id="status_article" onchange="filterStatusArticle(event, 'form_status_article')">
+                                                    <select class="form-control" name="status_article" id="status_article" onchange="filterStatusArticle(event, 'form_status_article')">
                                                         <option value="null">{{__('author.select_status')}}</option>
                                                         <option value="{{\App\Models\Article::STATUS_APPROVE}}" {{isset($_GET['status_article']) && $_GET['status_article'] == \App\Models\Article::STATUS_APPROVE ? 'selected' : '' }}>{{__('author.approve')}}</option>
                                                         <option value="{{\App\Models\Article::STATUS_PENDING}}" {{isset($_GET['status_article']) && $_GET['status_article'] == \App\Models\Article::STATUS_PENDING ? 'selected' : '' }}>{{__('author.pending')}}</option>
@@ -142,7 +142,7 @@
                                                 <form action="{{route('author.show', ['id' => $user->id])}}" id="form_search_list_article">
                                                     <input name="tab" type="hidden" value="{{!isset($_GET['tab']) ? 'profile' : $_GET['tab']}}">
                                                     <input name="status_article" type="hidden" value="{{!isset($_GET['status_article']) ? 'null' : $_GET['status_article']}}">
-                                                    <input type="text" name="search_list_article" value="{{!isset($_GET['search_list_article']) ? '' : $_GET['search_list_article']}}">
+                                                    <input type="text" class="form-control" name="search_list_article" value="{{!isset($_GET['search_list_article']) ? '' : $_GET['search_list_article']}}">
                                                 </form>
                                             </div>
                                         </div>
@@ -181,7 +181,7 @@
                                                 <form action="{{route('author.show', ['id' => $user->id])}}" id="status_list_article_mark">
                                                     <input name="tab" type="hidden" value="{{!isset($_GET['tab']) ? 'profile' : $_GET['tab']}}">
                                                     <input name="search_list_article_mark" type="hidden" value="{{!isset($_GET['search_list_article_mark']) ? '' : $_GET['search_list_article_mark']}}">
-                                                    <select name="status_mark" id="status_mark" onchange="filterStatusArticle(event, 'status_list_article_mark')">
+                                                    <select class="form-control" name="status_mark" id="status_mark" onchange="filterStatusArticle(event, 'status_list_article_mark')">
                                                         <option value="null">{{__('author.select_status')}}</option>
                                                         <option value="{{\App\Models\Article::IS_TRUST}}" {{isset($_GET['status_mark']) && $_GET['status_mark'] == \App\Models\Article::IS_TRUST ? 'selected' : '' }}>Trust</option>
                                                         <option value="{{\App\Models\Article::IS_FAKE}}" {{isset($_GET['status_mark']) && $_GET['status_mark'] === '0' ? 'selected' : '' }}>Fake</option>
@@ -192,7 +192,7 @@
                                                 <form action="{{route('author.show', ['id' => $user->id])}}" id="form_search_list_article_mark">
                                                     <input name="tab" type="hidden" value="{{!isset($_GET['tab']) ? 'profile' : $_GET['tab']}}">
                                                     <input name="status_mark" type="hidden" value="{{!isset($_GET['status_mark']) ? 'null' : $_GET['status_mark']}}">
-                                                    <input type="text" name="search_list_article_mark" value="{{!isset($_GET['search_list_article_mark']) ? '' : $_GET['search_list_article_mark']}}">
+                                                    <input type="text" class="form-control" name="search_list_article_mark" value="{{!isset($_GET['search_list_article_mark']) ? '' : $_GET['search_list_article_mark']}}">
                                                 </form>
                                             </div>
                                         </div>
@@ -235,7 +235,7 @@
                                                 <form action="{{route('author.show', ['id' => $user->id])}}" id="form_filter_month">
                                                     <input name="tab" type="hidden" value="{{!isset($_GET['tab']) ? 'profile' : $_GET['tab']}}">
                                                     <input name="status_transaction" type="hidden" value="{{!isset($_GET['status_transaction']) ? '' : $_GET['status_transaction']}}">
-                                                    <select name="filter_month" id="filter_month" onchange="filterStatusArticle(event, 'form_filter_month')">
+                                                    <select class="form-control" name="filter_month" id="filter_month" onchange="filterStatusArticle(event, 'form_filter_month')">
                                                         <option value="null">{{__('author.all_month')}}</option>
                                                         @for($i = 1;$i<=12;$i++)
                                                             <option value="{{$i}}" {{isset($_GET['filter_month']) && $_GET['filter_month'] == $i ? 'selected': ''}}>{{__('author.month')}} {{$i}}</option>
@@ -247,7 +247,7 @@
                                                 <form action="{{route('author.show', ['id' => $user->id])}}" id="form_status_transaction">
                                                     <input name="tab" type="hidden" value="{{!isset($_GET['tab']) ? 'profile' : $_GET['tab']}}">
                                                     <input name="filter_month" type="hidden" value="{{!isset($_GET['filter_month']) ? 'null' : $_GET['filter_month']}}">
-                                                    <select name="status_transaction" id="status_transaction" onchange="filterStatusArticle(event, 'form_status_transaction')">
+                                                    <select class="form-control" name="status_transaction" id="status_transaction" onchange="filterStatusArticle(event, 'form_status_transaction')">
                                                         <option value="null">{{__('author.all_status')}}</option>
                                                         <option value="{{\App\Models\HistoryTransactionToken::TYPE_SEND}}" {{isset($_GET['status_transaction']) && $_GET['status_transaction'] == \App\Models\HistoryTransactionToken::TYPE_SEND ? 'selected': ''}}>{{__('author.send_token')}}</option>
                                                         <option value="{{\App\Models\HistoryTransactionToken::TYPE_RECEIVE}}" {{isset($_GET['status_transaction']) && $_GET['status_transaction'] == \App\Models\HistoryTransactionToken::TYPE_RECEIVE ? 'selected': ''}}>{{__('author.receive_token')}}</option>
