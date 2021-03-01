@@ -7,4 +7,6 @@ return [
     'permission' => 'Permissions',
     'author' => 'Author',
     'history' => 'History Token',
+    'parent' => 'Menu parent',
+    'order_no' => 'Order no'
 ];

@@ -119,7 +119,7 @@ class CategoryCrudController extends CrudController
             'model' => "App\Models\Category", // related model
             'attribute' => 'name',
             'field_change' => 'language_id',
-            'url' => 'api/category'
+            'url' => 'api/category',
         ]);
 
         $this->crud->addField([

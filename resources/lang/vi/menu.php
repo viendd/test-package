@@ -7,4 +7,6 @@ return [
     'permission' => 'Quản lý quyền',
     'author' => 'Quản lý tác giả',
     'history' => 'Lịch sử giao dịch',
+    'parent' => 'Menu cha',
+    'order_no' => 'Thứ tự sắp xếp'
 ];
