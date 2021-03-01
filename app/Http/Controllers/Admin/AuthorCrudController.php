@@ -42,15 +42,15 @@ class AuthorCrudController extends CrudController
     protected function setupListOperation()
     {
 //        CRUD::setFromDb(); // columns
-        CRUD::column('avatar')->type('image');
-        CRUD::column('name')->type('text');
+        CRUD::column('avatar')->type('image')->label(__('author.avatar'));
+        CRUD::column('name')->type('text')->label(__('author.name'));
         CRUD::column('email')->type('email');
         CRUD::column('token')->type('number');
         CRUD::column('is_admin')->type('select_from_array')->options([
             Author::MEMBER => 'Member',
             Author::AUTHOR => 'Author'
-        ])->label('Type');
-        CRUD::column('created_at')->type('datetime');
+        ])->label('Type')->label(__('author.type'));
+        CRUD::column('created_at')->type('datetime')->label(__('author.created'));
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:

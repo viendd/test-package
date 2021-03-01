@@ -8,5 +8,6 @@ return [
     'name' => 'Name',
     'token' => 'Token',
     'top_title' => 'Top User Send Token',
-    'list_title' => 'List history transaction token'
+    'list_title' => 'List history transaction token',
+    'created' => 'Created'
 ];
