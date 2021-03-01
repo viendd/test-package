@@ -15,7 +15,8 @@ class CategoryRequest extends FormRequest
     public function authorize()
     {
         // only allow updates if the user is logged in
-        return backpack_auth()->check();
+//        return backpack_auth()->check();
+        return true;
     }
 
     /**
@@ -27,10 +28,11 @@ class CategoryRequest extends FormRequest
     public function rules()
     {
         $id = \request()->input('id') ?? '';
+//        dd($id);
         return [
             'language_id' => 'required',
             'order' => 'required|integer',
-            'name' => 'required|unique:categories,name,'.$id,
+//            'name' => 'required|unique:categories,name,'.$id,
         ];
     }
 

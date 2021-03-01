@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Language;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Illuminate\Http\Request;
 
 /**
  * Class CategoryCrudController
@@ -34,6 +35,8 @@ class CategoryCrudController extends CrudController
         CRUD::setModel(\App\Models\Category::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/category');
         CRUD::setEntityNameStrings('category', 'categories');
+        CRUD::setCreateView('admin.category.create');
+        CRUD::setEditView('admin.category.update');
     }
 
     /**
@@ -132,6 +135,27 @@ class CategoryCrudController extends CrudController
          */
     }
 
+    public function create()
+    {
+        $this->crud->hasAccessOrFail('create');
+        $this->data['crud'] = $this->crud;
+        $this->data['title'] = $this->crud->getTitle() ?? mb_ucfirst($this->crud->entity_name_plural);
+        $this->data['languages'] = Language::all();
+        $this->data['categories'] = Category::all();
+        return view($this->crud->getCreateView(), $this->data);
+    }
+
+    public function edit($id)
+    {
+        $this->crud->hasAccessOrFail('update');
+        $this->data['crud'] = $this->crud;
+        $this->data['title'] = $this->crud->getTitle() ?? mb_ucfirst($this->crud->entity_name_plural);
+        $this->data['languages'] = Language::all();
+        $this->data['entry'] = Category::findOrFail($id);
+        $this->data['categories'] = Category::where('language_id', $this->data['entry']->language_id)->where('id', '!=', $this->data['entry']->id )->get();
+        return view($this->crud->getEditView(), $this->data);
+    }
+
     protected function setupShowOperation()
     {
         $this->setupListOperation();
@@ -147,5 +171,37 @@ class CategoryCrudController extends CrudController
     {
         $this->crud->field('id')->type('hidden');
         $this->setupCreateOperation();
+    }
+
+    public function update()
+    {
+        $this->crud->setRequest($this->crud->validateRequest());
+
+        $this->crud->unsetValidation(); // validation has already been run
+        $item = $this->crud->update($this->crud->getRequest()->id,
+            $this->crud->getRequest()->all());
+        $this->data['entry'] = $this->crud->entry = $item;
+
+        // show a success message
+        \Alert::success(trans('backpack::crud.update_success'))->flash();
+
+        // save the redirect choice for next time
+        $this->crud->setSaveAction();
+
+        return $this->crud->performSaveAction($item->getKey());
+    }
+
+    public function getCategoryByLanguage(Request $request)
+    {
+        $language_id = $request->language_id;
+        $id = $request->id;
+        $categories = Category::where('language_id', $language_id)->get();
+        $data = '<option value>-</option>';
+        foreach ($categories as $category){
+            if ($category->id != $id){
+                $data .= '<option value="'.$category->id.'">'.$category->name.'</option>';
+            }
+        }
+        return $data;
     }
 }

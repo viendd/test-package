@@ -15,6 +15,7 @@ Route::group([
     'namespace'  => 'App\Http\Controllers\Admin',
 ], function () { // custom admin routes
     Route::crud('category', 'CategoryCrudController');
+    Route::get('getCategoryByLanguage', 'CategoryCrudController@getCategoryByLanguage')->name('category.getCategoryByLanguage');
     Route::crud('author', 'AuthorCrudController');
     Route::crud('historytransactiontoken', 'HistoryTransactionTokenCrudController');
     Route::crud('article', 'ArticleCrudController');

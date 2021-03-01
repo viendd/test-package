@@ -27,23 +27,27 @@
     <div class="content">
         <div class="row">
             <div class="col-sm-3">
-                <div class="alert alert-primary" role="alert">
-                    {{__('dashboard.all_category')}} : {{$count_categories}}
+                <div class="statistical category">
+                    <p class="number">{{$count_categories}}</p>
+                    {{__('dashboard.all_category')}}
                 </div>
             </div>
             <div class="col-sm-3">
-                <div class="alert alert-info" role="alert">
-                    {{__('dashboard.all_article')}} : {{$count_article}}
+                <div class="statistical article" role="alert">
+                    <p class="number">{{$count_article}}</p>
+                    {{__('dashboard.all_article')}}
                 </div>
             </div>
             <div class="col-sm-3">
-                <div class="alert alert-success" role="alert">
-                    {{__('dashboard.all_member')}} : {{$count_member}}
+                <div class="statistical member" role="alert">
+                    <p class="number">{{$count_member}}</p>
+                    {{__('dashboard.all_member')}}
                 </div>
             </div>
             <div class="col-sm-3">
-                <div class="alert alert-danger" role="alert">
-                    {{__('dashboard.all_token')}} : {{$count_token}}
+                <div class="statistical token" role="alert">
+                    <p class="number">{{$count_token}}</p>
+                    {{__('dashboard.all_token')}}
                 </div>
             </div>
         </div>
@@ -55,31 +59,31 @@
             $month = request('month') ?? \Carbon\Carbon::now()->month;
             $year = request('year') ?? \Carbon\Carbon::now()->year;
         @endphp
-        <div class="col-md-12">
+        <div class="col-md-12" style="margin-left: 15px">
             <div class="row">
-                    <form action="{{route('dashboard.index')}}" id="filter_date">
-                        <div class="row">
-                            <div class="col-md-5">
-                                <select name="month" id="month" onchange="filterData(event)">
-                                    @for($i=1;$i<=12;$i++)
-                                        <option value="{{$i}}" {{ $month== $i ? 'selected' : ''}}> {{__('dashboard.month')}} {{$i}}</option>
-                                    @endfor
-                                </select>
-                            </div>
-                            <div class="col-md-5">
-                                <select name="year" id="year" onchange="filterData(event)">
-                                    @for($i=\Carbon\Carbon::now()->year; $i >= 2010;$i--)
-                                        <option value="{{$i}}" {{$year == $i ? 'selected' : ''}}> {{__('dashboard.year')}} {{$i}}</option>
-                                    @endfor
-                                </select>
-                            </div>
+                <form action="{{route('dashboard.index')}}" id="filter_date">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <select class="form-control" name="month" id="month" onchange="filterData(event)">
+                                @for($i=1;$i<=12;$i++)
+                                    <option value="{{$i}}" {{ $month== $i ? 'selected' : ''}}> {{__('dashboard.month')}} {{$i}}</option>
+                                @endfor
+                            </select>
                         </div>
-                    </form>
-                </div>
+                        <div class="col-md-6">
+                            <select class="form-control" name="year" id="year" onchange="filterData(event)">
+                                @for($i=\Carbon\Carbon::now()->year; $i >= 2010;$i--)
+                                    <option value="{{$i}}" {{$year == $i ? 'selected' : ''}}> {{__('dashboard.year')}} {{$i}}</option>
+                                @endfor
+                            </select>
+                        </div>
+                    </div>
+                </form>
             </div>
+        </div>
         <div class="col-md-4">
             {{__('dashboard.title_category')}}
-            <table class="table">
+            <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -100,7 +104,7 @@
         </div>
         <div class="col-md-4">
             {{__('dashboard.title_user')}}
-            <table class="table">
+            <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -121,7 +125,7 @@
         </div>
         <div class="col-md-4">
             {{__('dashboard.title_user_mark')}}
-            <table class="table">
+            <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -165,4 +169,33 @@
     <!-- CRUD LIST CONTENT - crud_list_scripts stack -->
     @stack('crud_list_scripts')
 @endsection
+
+
+    <style>
+        .statistical{
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            font-size: 20px;
+            padding-top: 40px;
+        }
+        .category{
+            background-image: linear-gradient(to right, red , yellow);
+        }
+        .article{
+            background-image: linear-gradient(to right, pink , palevioletred);
+        }
+        .member{
+            background-image: linear-gradient(to right, darkseagreen , darkgreen);
+        }
+        .token{
+            background-image: linear-gradient(to right, steelblue , deepskyblue);
+        }
+        .number{
+            font-size: 35px;
+            font-weight: bold;
+        }
+    </style>
 
