@@ -31,6 +31,8 @@ return [
     'amount_user_follow' => 'Số lượng theo dõi',
     'amount_followed' => 'Số lượng được theo dõi',
     'address' => 'Địa chỉ',
-    'company' => 'Công ty'
-
+    'company' => 'Công ty',
+    'avatar' => 'Ảnh đại diện',
+    'type' => 'Vị trí',
+    'created' => 'Ngày tạo',
 ];

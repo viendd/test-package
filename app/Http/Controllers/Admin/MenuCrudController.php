@@ -54,7 +54,7 @@ class MenuCrudController extends CrudController
             return $entry->parent ? $entry->parent->name : __('menu.parent');
         }, 'wrapper'   => [
             'href' => function ($crud, $column, $entry, $related_key) {
-                return backpack_url('menu/' .$entry->parent_id. '/show');
+                if($entry->parent) return backpack_url('menu/' .$entry->parent_id. '/show');
             },
         ]]);
 

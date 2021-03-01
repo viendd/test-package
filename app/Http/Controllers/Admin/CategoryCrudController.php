@@ -55,7 +55,7 @@ class CategoryCrudController extends CrudController
         CRUD::column('name')->type('text')->label(__('category.category_name'));
         CRUD::column('slug')->type('text');
         CRUD::addColumn([   // select_multiple: n-n relationship (with pivot table)
-            'label'     => 'Articles', // Table column heading
+            'label'     => __('category.article'), // Table column heading
             'type'      => 'relationship_count',
             'name'      => 'articles', // the method that defines the relationship in your Model
             'wrapper'   => [

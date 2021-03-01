@@ -41,7 +41,9 @@ class TagCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::setFromDb(); // columns
-
+        CRUD::modifyColumn('name', [
+           'label' =>  __('author.name')
+        ]);
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
@@ -60,7 +62,7 @@ class TagCrudController extends CrudController
         CRUD::setValidation(TagRequest::class);
 
 //        CRUD::setFromDb(); // fields
-        CRUD::field('name')->type('text');
+        CRUD::field('name')->type('text')->label(__('author.name'));
         $this->crud->field('slug')->type('hidden');
         /**
          * Fields can be defined using the fluent syntax or array syntax:

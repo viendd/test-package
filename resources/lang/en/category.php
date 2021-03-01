@@ -4,4 +4,5 @@ return [
     'category_name' => 'Category name',
     'category_parent' => 'Category parent',
     'order' => 'Order no',
+    'article' => 'Article'
 ];

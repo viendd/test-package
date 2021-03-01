@@ -55,7 +55,7 @@ class HistoryTransactionTokenCrudController extends CrudController
             'model'     => "App\Models\Author", // foreign key model
         ]);
         CRUD::column('token')->type('number');
-        CRUD::column('created_at')->type('dateTime');
+        CRUD::column('created_at')->type('dateTime')->label(__('history.created'));
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');

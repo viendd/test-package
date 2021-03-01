@@ -8,5 +8,8 @@ return [
     'author' => 'Author',
     'history' => 'History Token',
     'parent' => 'Menu parent',
-    'order_no' => 'Order no'
+    'order_no' => 'Order no',
+    'static_page' => 'Static page',
+    'article' => 'Article',
+    'dashboard' => 'Dashboard'
 ];
