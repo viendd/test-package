@@ -83,7 +83,7 @@
         </div>
         <div class="col-md-4">
             {{__('dashboard.title_category')}}
-            <table class="table">
+            <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -104,7 +104,7 @@
         </div>
         <div class="col-md-4">
             {{__('dashboard.title_user')}}
-            <table class="table">
+            <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -125,7 +125,7 @@
         </div>
         <div class="col-md-4">
             {{__('dashboard.title_user_mark')}}
-            <table class="table">
+            <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
