@@ -35,8 +35,8 @@ class CategoryCrudController extends CrudController
         CRUD::setModel(\App\Models\Category::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/category');
         CRUD::setEntityNameStrings('category', 'categories');
-        CRUD::setCreateView('admin.category.create');
-        CRUD::setEditView('admin.category.update');
+//        CRUD::setCreateView('admin.category.create');
+//        CRUD::setEditView('admin.category.update');
     }
 
     /**
@@ -113,11 +113,13 @@ class CategoryCrudController extends CrudController
 
         $this->crud->addField([
             'label' => __('category.category_parent'),
-            'type' => 'select',
+            'type' => 'select_on_change',
             'name' => "parent_id",
             'entity' => 'parent',
             'model' => "App\Models\Category", // related model
             'attribute' => 'name',
+            'field_change' => 'language_id',
+            'url' => 'api/category'
         ]);
 
         $this->crud->addField([
@@ -133,27 +135,6 @@ class CategoryCrudController extends CrudController
          * - CRUD::field('price')->type('number');
          * - CRUD::addField(['name' => 'price', 'type' => 'number']));
          */
-    }
-
-    public function create()
-    {
-        $this->crud->hasAccessOrFail('create');
-        $this->data['crud'] = $this->crud;
-        $this->data['title'] = $this->crud->getTitle() ?? mb_ucfirst($this->crud->entity_name_plural);
-        $this->data['languages'] = Language::all();
-        $this->data['categories'] = Category::all();
-        return view($this->crud->getCreateView(), $this->data);
-    }
-
-    public function edit($id)
-    {
-        $this->crud->hasAccessOrFail('update');
-        $this->data['crud'] = $this->crud;
-        $this->data['title'] = $this->crud->getTitle() ?? mb_ucfirst($this->crud->entity_name_plural);
-        $this->data['languages'] = Language::all();
-        $this->data['entry'] = Category::findOrFail($id);
-        $this->data['categories'] = Category::where('language_id', $this->data['entry']->language_id)->where('id', '!=', $this->data['entry']->id )->get();
-        return view($this->crud->getEditView(), $this->data);
     }
 
     protected function setupShowOperation()
