@@ -191,12 +191,12 @@ class ArticleCrudController extends CrudController
 
         $this->crud->addField([
             'label' => 'Category',
-            'type' => 'relationship',
+            'type' => 'select_on_change',
             'name' => 'category_id',
             'entity' => 'category',
             'attribute' => 'name',
-            'inline_create' => true,
-            'ajax' => true,
+            'field_change' => 'language_id',
+            'url' => 'api/category'
         ]);
 
         $this->crud->addField([

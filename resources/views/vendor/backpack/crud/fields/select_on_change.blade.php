@@ -15,7 +15,17 @@
         $optionsDependence = call_user_func($dependenceField['options'], $dependenceField['model']::query());
     }
 
-    $defaultOption = $optionsDependence->first();
+    if (!@$entry) {
+        if (isset($dependenceField['default']))
+        {
+            $defaultOption = $optionsDependence->where('id', $dependenceField['default'])->first();
+        } else {
+            $defaultOption = $optionsDependence->first();
+        }
+
+    } else {
+        $defaultOption = $optionsDependence->where('id', $entry[$field['field_change']])->first();
+    }
 
     if (!isset($field['options'])) {
         $options = $field['model']::where($field['field_change'], $defaultOption->id)->get();
