@@ -48,7 +48,7 @@ class Article extends Model
         return [
             self::STATUS_DRAFT => __('article.draft'),
             self::STATUS_PUBLISHED => __('article.published'),
-            self::STATUS_APPROVE => __('article.approve'),
+            self::STATUS_APPROVE => __('article.approved'),
             self::STATUS_PENDING => __('article.pending'),
             self::STATUS_REJECT => __('article.reject')
         ];

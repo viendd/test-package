@@ -21,41 +21,38 @@
 
 @section('content')
     <!-- Default box -->
-    <hr>
-    <h4>
-        <span>{{ __('article.top_title') }}</span>
-    </h4>
-    <div class="row">
-        <div class="col-md-7">
-            <table id="topTable" class="bg-white table table-striped table-hover nowrap rounded shadow-xs border-xs mt-2" cellspacing="0">
-                <thead>
-                <tr>
-                    <th>{{ __('history.index') }}</th>
-                    <th>{{ __('history.name') }}</th>
-                    <th>{{ __('article.amount') }}</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($top as $key => $top)
-                    <tr>
-                        <td>{{ $key + 1 }}</td>
-                        <td>{{ $top->user->name }}</td>
-                        <td>{{ $top->sum }}</td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="topTable" class="bg-white table table-striped table-hover nowrap rounded shadow-xs border-xs mt-2" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th>{{ __('history.index') }}</th>
+                                <th>{{ __('history.name') }}</th>
+                                <th>{{ __('article.amount') }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($top as $key => $top)
+                                <tr>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ $top->user->name }}</td>
+                                    <td>{{ $top->sum }}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <hr>
-    <h4>
-        <span>{{ __('article.list_title') }}</span>
-    </h4>
     <div class="row">
-
         <!-- THE ACTUAL CONTENT -->
         <div class="{{ $crud->getListContentClass() }}">
-
+            <button type="button" style="margin-bottom: 10px" class="btn btn-info" data-toggle="modal" data-target=".bd-example-modal-lg" id="top">{{ __('article.top_title') }}</button>
             <div class="row mb-0">
                 <div class="col-sm-6">
                     @if ( $crud->buttons()->where('stack', 'top')->count() ||  $crud->exportButtons())
@@ -187,4 +184,11 @@
     <!-- CRUD LIST CONTENT - crud_list_scripts stack -->
     @stack('crud_list_scripts')
 @endsection
-
+<style>
+    .mt-2 {
+        margin: 0 !important;
+    }
+    .modal-backdrop{
+        width: unset !important;
+    }
+</style>

@@ -63,7 +63,7 @@ class ArticleCrudController extends CrudController
             return $entry->language->name;
         }]);
 
-        CRUD::column('title')->type('text');
+        CRUD::column('title')->type('text')->label(__('article.title'));
 
         CRUD::addColumn(['name' => 'parent_id', 'type' => 'closure', 'label' => __('category.category_parent'), 'function' => function($entry){
             return $entry->category ? $entry->category->name : __('category.category_parent');
@@ -190,7 +190,7 @@ class ArticleCrudController extends CrudController
         ]);
 
         $this->crud->addField([
-            'label' => 'Category',
+            'label' => __('article.category'),
             'type' => 'select_on_change',
             'name' => 'category_id',
             'entity' => 'category',
@@ -200,20 +200,20 @@ class ArticleCrudController extends CrudController
         ]);
 
         $this->crud->addField([
-            'label' => 'Title',
+            'label' => __('article.title'),
             'type' => 'text',
             'name' => 'title',
         ]);
 
         $this->crud->addField([
-            'label' => 'Intro short',
+            'label' => __('article.intro_short'),
             'type' => 'text',
             'name' => 'intro_short',
         ]);
 
         $this->crud->addField([
             'name' => 'content',
-            'label' => 'Content',
+            'label' => __('article.content'),
             'type' => 'ckeditor',
             'placeholder' => 'Your textarea text here',
             // optional:
@@ -226,14 +226,14 @@ class ArticleCrudController extends CrudController
         ]);
 
         $this->crud->addField([
-            'label' => "Image",
+            'label' => __('article.image'),
             'name' => "avatar",
             'type'      => 'upload',
             'upload'    => true,
         ]);
 
         $this->crud->addField([
-            'label' => "Status",
+            'label' => __('article.status'),
             'name' => "status",
             'type' => 'select_from_array',
             'options' => [Article::STATUS_PUBLISHED => 'Published', Article::STATUS_DRAFT => 'Draft'],
@@ -261,7 +261,7 @@ class ArticleCrudController extends CrudController
             'name' => 'meta_description',
         ]);
         $this->crud->addField([
-            'label' => 'Meta_keyword',
+            'label' => 'Meta keyword',
             'type' => 'text',
             'name' => 'meta_keyword',
         ]);
