@@ -130,7 +130,7 @@
                         <th data-orderable="false"
                             data-priority="{{ $crud->getActionsColumnPriority() }}"
                             data-visible-in-export="false"
-                        >{{ trans('backpack::crud.actions') }}</th>
+                        >Hành động</th>
                     @endif
                 </tr>
                 </thead>
@@ -144,7 +144,7 @@
                     @endforeach
 
                     @if ( $crud->buttons()->where('stack', 'line')->count() )
-                        <th>{{ trans('backpack::crud.actions') }}</th>
+                        <th>Hành động</th>
                     @endif
                 </tr>
                 </tfoot>
