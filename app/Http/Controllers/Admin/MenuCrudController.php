@@ -8,6 +8,7 @@ use App\Models\Menu;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 
 /**
  * Class MenuCrudController
@@ -33,6 +34,7 @@ class MenuCrudController extends CrudController
         CRUD::setModel(\App\Models\Menu::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/menu');
         CRUD::setEntityNameStrings('menu', 'menus');
+        CRUD::setReorderView('admin.menu.reorder');
     }
 
     protected function setupReorderOperation()
@@ -68,7 +70,7 @@ class MenuCrudController extends CrudController
         ]]);
 
         CRUD::column('uri')->type('text');
-        CRUD::column('order_no')->type('number');
+        CRUD::column('order_no')->type('number')->label(__('category.order'));
 
         $this->crud->addFilter(
             [
@@ -180,5 +182,22 @@ class MenuCrudController extends CrudController
             DB::rollBack();
             return $exception->getMessage();
         }
+    }
+
+    public function reorder()
+    {
+
+        $this->crud->hasAccessOrFail('reorder');
+
+        if (! $this->crud->isReorderEnabled()) {
+            abort(403, 'Reorder is disabled.');
+        }
+        if(request()->language_id) $this->data['entries'] = Menu::where('language_id', request()->language_id)->get();
+        else $this->data['entries'] = Menu::where('language_id', Language::VI)->get();
+        $this->data['crud'] = $this->crud;
+        $this->data['title'] = $this->crud->getTitle() ?? trans('backpack::crud.reorder').' '.$this->crud->entity_name;
+
+        // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
+        return view($this->crud->getReorderView(), $this->data);
     }
 }

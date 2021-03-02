@@ -14,6 +14,7 @@ class Language extends Model
     | GLOBAL VARIABLES
     |--------------------------------------------------------------------------
     */
+    CONST VI = 2;
 
     protected $table = 'languages';
     // protected $primaryKey = 'id';
