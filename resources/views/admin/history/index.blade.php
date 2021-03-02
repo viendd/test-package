@@ -27,8 +27,8 @@
             <div class="modal-content">
                 <div class="row">
                     <div class="col-md-12">
-                        <table id="topTable" class="bg-white table table-striped table-hover nowrap rounded shadow-xs border-xs mt-2" cellspacing="0">
-                            <thead>
+                        <table id="topTable" class="bg-white table table-bordered table-hover nowrap rounded shadow-xs border-xs mt-2" cellspacing="0">
+                            <thead class="thead-dark">
                             <tr>
                                 <th>{{ __('history.index') }}</th>
                                 <th>{{ __('history.name') }}</th>
@@ -188,8 +188,9 @@
     @stack('crud_list_scripts')
 @endsection
 <style>
-    .mt-2 {
+    #topTable.mt-2 {
         margin: 0 !important;
+        margin-top: 0 !important;
     }
     .modal-backdrop{
         width: unset !important;
