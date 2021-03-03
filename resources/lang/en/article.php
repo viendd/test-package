@@ -21,5 +21,6 @@ return [
     'action' => 'Manipulation',
     'user_public' => 'User published',
     'not_public' => 'Not public',
-    'created_date' => 'Created date'
+    'created_date' => 'Created date',
+    'video' => 'Video'
 ];

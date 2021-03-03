@@ -12,6 +12,7 @@
         "backpack/crud": "4.1.*",
         "backpack/pagemanager": "^3.0",
         "backpack/permissionmanager": "^6.0",
+        "dawson/youtube": "^6.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",

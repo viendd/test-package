@@ -20,10 +20,13 @@ Route::group([
     Route::crud('historytransactiontoken', 'HistoryTransactionTokenCrudController');
     Route::crud('article', 'ArticleCrudController');
     Route::get('article/{id}/approve', 'ArticleCrudController@approve');
+    Route::get('articlevideo/{id}/approve', 'ArticleCrudController@approve');
     Route::get('article/{id}/reject', 'ArticleCrudController@reject');
+    Route::get('articlevideo/{id}/reject', 'ArticleCrudController@reject');
     Route::crud('tag', 'TagCrudController');
     Route::crud('dashboard', 'DashboardCrudController');
     Route::crud('menu', 'MenuCrudController');
+    Route::crud('articlevideo', 'ArticleVideoCrudController');
 }); // this should be the absolute last line of this file
 Route::get('api/category', 'App\Http\Controllers\Api\CategoryController@index');
 Route::get('api/menu', 'App\Http\Controllers\Api\MenuController@index');

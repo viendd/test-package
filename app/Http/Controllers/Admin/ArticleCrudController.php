@@ -10,9 +10,11 @@ use App\Models\Language;
 use App\Models\Tag;
 use App\Models\User;
 use App\Services\UploadService;
+use App\Traits\VideoYoutube;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Carbon\Carbon;
+use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -31,7 +33,7 @@ class ArticleCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\FetchOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
-
+    use VideoYoutube;
     protected $fileService;
 
     /**
@@ -436,14 +438,23 @@ class ArticleCrudController extends CrudController
     public function search()
     {
         $this->crud->addClause('where','status', '<>', Article::STATUS_DRAFT);
+        $this->crud->addClause('where','type', '=', Article::TYPE_IMAGE);
         return $this->traitSearch();
     }
 
     public function approve($id)
     {
         $article = Article::findOrFail($id);
-        $article->update(['status' => Article::STATUS_APPROVE, 'user_public_id' => auth()->user()->id, 'publish_date' => Carbon::now()]);
+//        $article->update(['status' => Article::STATUS_APPROVE, 'user_public_id' => auth()->user()->id, 'publish_date' => Carbon::now()]);
         $article->refresh();
+        if($article->type == Article::TYPE_VIDEO){
+            $data = [
+                'title' => $article->title,
+                'description' => $article->content,
+                'file' => $article->video
+            ];
+            $this->uploadVideoToYoutube($data);
+        }
         \Alert::success(trans('backpack::crud.update_success'))->flash();
         return redirect()->route('article.index');
     }

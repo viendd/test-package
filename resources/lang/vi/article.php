@@ -23,4 +23,5 @@ return [
     'user_public' => 'Tài khoản published',
     'not_public' => 'Chưa được công khai',
     'created_date' => 'Ngày tạo',
+    'video' => 'Video'
 ];

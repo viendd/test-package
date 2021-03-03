@@ -17,3 +17,5 @@
 <li class='nav-item'><a class='nav-link' href='{{ backpack_url('tag') }}'><i class='nav-icon la la-tag'></i> Tags</a></li>
 
 <li class='nav-item'><a class='nav-link' href='{{ backpack_url('menu') }}'><i class='nav-icon la la-question'></i> Menus</a></li>
+
+<li class='nav-item'><a class='nav-link' href='{{ backpack_url('articlevideo') }}'><i class='nav-icon la la-question'></i> {{__('article.video')}} </a></li>

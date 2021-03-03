@@ -15,6 +15,8 @@ class Article extends Model
     | GLOBAL VARIABLES
     |--------------------------------------------------------------------------
     */
+    CONST TYPE_IMAGE = 1;
+    CONST TYPE_VIDEO = 2;
 
     CONST STATUS_DRAFT = 0;
     CONST STATUS_PUBLISHED = 1;
