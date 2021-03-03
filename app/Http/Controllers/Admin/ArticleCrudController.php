@@ -445,12 +445,12 @@ class ArticleCrudController extends CrudController
     public function approve($id)
     {
         $article = Article::findOrFail($id);
-//        $article->update(['status' => Article::STATUS_APPROVE, 'user_public_id' => auth()->user()->id, 'publish_date' => Carbon::now()]);
+        $article->update(['status' => Article::STATUS_APPROVE, 'user_public_id' => auth()->user()->id, 'publish_date' => Carbon::now()]);
         $article->refresh();
         if($article->type == Article::TYPE_VIDEO){
             $data = [
                 'title' => $article->title,
-                'description' => $article->content,
+                'description' => str_replace(['>', '<'], '', $article->content),
                 'file' => $article->video
             ];
             $this->uploadVideoToYoutube($data);
