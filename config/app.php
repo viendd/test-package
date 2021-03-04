@@ -175,7 +175,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Dawson\Youtube\YoutubeServiceProvider::class,
-
+        App\Modules\ModuleServiceProvider::class,
     ],
 
     /*

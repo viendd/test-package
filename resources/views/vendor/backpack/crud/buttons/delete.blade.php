@@ -1,5 +1,5 @@
 @if ($crud->hasAccess('delete'))
-    @if(!$entry instanceof \App\Models\Article || ($entry instanceof \App\Models\Article && backpack_user()->id == $entry->user_id))
+    @if(!$entry instanceof \App\Models\Article || ($entry instanceof \App\Modules\Article\Models\Article && backpack_user()->id == $entry->user_id))
 	    <a href="javascript:void(0)" onclick="deleteEntry(this)" data-route="{{ url($crud->route.'/'.$entry->getKey()) }}" class="btn btn-sm btn-link" data-button-type="delete"><i class="la la-trash"></i> Xóa</a>
     @endif
 @endif

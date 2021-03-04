@@ -1,5 +1,5 @@
 @if ($crud->hasAccess('update'))
-    @if( !$entry instanceof \App\Models\Article || ($entry instanceof \App\Models\Article && backpack_user()->id == $entry->user_id))
+    @if( !$entry instanceof \App\Modules\Article\Models\Article || ($entry instanceof \App\Modules\Article\Models\Article && backpack_user()->id == $entry->user_id))
         @if (!$crud->model->translationEnabled())
 
         <!-- Single edit button -->
